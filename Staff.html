@@ -3,27 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saladbox Staff</title>
+    <title>إدارة Saladbox | لوحة العمال</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        :root { --green: #10b981; --black: #050505; --card: #141414; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--black); color: white; padding: 15px; margin: 0; }
+        .stat-box { background: var(--card); border-radius: 20px; padding: 20px; border-bottom: 4px solid var(--green); text-align: center; }
+        .order-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid #222; margin-top: 15px; }
+        .btn-action { font-weight: 900; font-size: 0.75rem; padding: 12px 5px; border-radius: 12px; border: none; cursor: pointer; }
+    </style>
 </head>
-<body class="bg-black text-white p-4">
-    <h1 class="text-[#10b981] text-2xl font-black mb-6">خزانة الطلبات 📥</h1>
-    
+<body>
+
+    <header class="flex justify-between items-center mb-8 bg-emerald-900/10 p-5 rounded-3xl border border-green-500/20">
+        <div><h1 class="text-xl font-black text-[#10b981]">SALADBOX ADMIN</h1><p class="text-[9px] text-gray-500 uppercase">Live Dashboard</p></div>
+        <div id="status" class="bg-red-500 w-2 h-2 rounded-full"></div>
+    </header>
+
     <div class="grid grid-cols-2 gap-4 mb-8">
-        <div class="bg-[#161616] p-4 rounded-2xl border-b-4 border-white text-center">
-            <p class="text-[10px] text-gray-500 font-bold uppercase">الطلبات</p>
-            <h2 id="totalOrders" class="text-3xl font-black">0</h2>
-        </div>
-        <div class="bg-[#161616] p-4 rounded-2xl border-b-4 border-[#10b981] text-center">
-            <p class="text-[10px] text-gray-400 font-bold uppercase">الربح</p>
-            <h2 id="totalProfit" class="text-xl font-black text-[#10b981]">0</h2>
-        </div>
+        <div class="stat-box"><p class="text-[10px] text-gray-500 font-bold uppercase mb-1">طلبات اليوم</p><h2 id="totalCount" class="text-3xl font-black text-white">0</h2></div>
+        <div class="stat-box"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">إجمالي الربح</p><h2 id="totalRevenue" class="text-xl font-black text-[#10b981]">0</h2></div>
     </div>
 
-    <div id="list" class="space-y-4"></div>
+    <div id="ordersList" class="space-y-4 pb-24 text-center">
+        <p id="loading" class="text-gray-700 italic mt-10">في انتظار طلبات من السحاب...</p>
+    </div>
 
     <audio id="bell" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
@@ -36,40 +43,53 @@
         firebase.initializeApp(config);
         const db = firebase.database();
 
+        // تتبع حالة الاتصال
+        db.ref('.info/connected').on('value', (s) => {
+            document.getElementById('status').className = s.val() ? "bg-green-500 w-2 h-2 rounded-full animate-ping" : "bg-red-500 w-2 h-2 rounded-full";
+        });
+
+        // جلب البيانات لحظياً
         db.ref('orders').on('value', (snapshot) => {
-            const list = document.getElementById('list');
+            const list = document.getElementById('ordersList');
             list.innerHTML = "";
             let count = 0; let profit = 0;
 
-            snapshot.forEach((child) => {
-                const o = child.val(); const id = child.key;
-                count++; profit += parseInt(o.price);
+            if (snapshot.exists()) {
+                document.getElementById('loading').style.display = 'none';
+                snapshot.forEach((child) => {
+                    const o = child.val(); const id = child.key;
+                    count++; profit += parseInt(o.price);
 
-                const html = `
-                    <div class="bg-[#161616] p-5 rounded-3xl border border-gray-800">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-lg font-black italic underline decoration-green-500">${o.item}</h3>
-                            <span class="text-[10px] bg-white text-black px-2 py-0.5 rounded font-black">${o.status}</span>
-                        </div>
-                        <p class="text-gray-400 text-xs mb-4">الزبون: ${o.customer} | 📍 ${o.location}</p>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="wa('${o.phone}', 'prep', '${o.customer}')" class="bg-blue-600 text-white py-3 rounded-xl font-bold text-[10px]">تحضير</button>
-                            <button onclick="wa('${o.phone}', 'done', '${o.customer}')" class="bg-[#10b981] text-black py-3 rounded-xl font-bold text-[10px]">جاهز</button>
-                            <button onclick="del('${id}')" class="bg-red-600 text-white py-3 rounded-xl font-bold text-[10px]">حذف</button>
-                        </div>
-                    </div>`;
-                list.insertAdjacentHTML('afterbegin', html);
-            });
-            document.getElementById('totalOrders').innerText = count;
-            document.getElementById('totalProfit').innerText = profit.toLocaleString();
+                    const html = `
+                        <div class="order-card text-right shadow-2xl">
+                            <div class="flex justify-between mb-4">
+                                <h3 class="text-lg font-black text-white">${o.item}</h3>
+                                <span class="text-[9px] bg-[#10b981] text-black px-2 py-1 rounded font-bold uppercase">${o.status}</span>
+                            </div>
+                            <p class="text-gray-400 text-xs mb-1 font-bold">👤 الزبون: ${o.customer}</p>
+                            <p class="text-gray-400 text-xs mb-4">📍 الموقع: ${o.location}</p>
+                            
+                            <div class="grid grid-cols-3 gap-2 border-t border-gray-800 pt-4">
+                                <button onclick="wa('${o.phone}', 'prep', '${o.customer}')" class="btn-action bg-blue-600 text-white">تحضير 👨‍🍳</button>
+                                <button onclick="wa('${o.phone}', 'done', '${o.customer}')" class="btn-action bg-[#10b981] text-black">جاهز ✅</button>
+                                <button onclick="del('${id}')" class="btn-action bg-red-600 text-white">حذف 🗑️</button>
+                            </div>
+                        </div>`;
+                    list.insertAdjacentHTML('afterbegin', html);
+                });
+            }
+            document.getElementById('totalCount').innerText = count;
+            document.getElementById('totalRevenue').innerText = profit.toLocaleString() + " DA";
         });
 
         db.ref('orders').on('child_added', () => { document.getElementById('bell').play().catch(()=>{}); });
+
         function wa(p, t, n) {
-            let m = t === 'prep' ? `مرحباً ${n}، طلبك من Saladbox بدأ التحضير الآن!` : `طلبك جاهز يا ${n}! سيصلك الآن.`;
+            let m = t === 'prep' ? `مرحباً ${n}، طلبك من Saladbox بدأ التحضير الآن! 👨‍🍳` : `طلبك جاهز يا ${n}! سيوصلك الآن ✅🛵.`;
             window.open(`https://wa.me/${p}?text=${encodeURIComponent(m)}`, '_blank');
         }
-        function del(id) { if(confirm("حذف الطلب؟")) db.ref('orders/' + id).remove(); }
+
+        function del(id) { if(confirm("حذف الطلب نهائياً؟")) db.ref('orders/' + id).remove(); }
     </script>
 </body>
 </html>
