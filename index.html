@@ -1,4 +1,4 @@
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -36,4 +36,55 @@
             <h2 class="text-xl font-black mb-6 text-[#10b981]">أدخل بياناتك 📝</h2>
             <input id="uName" type="text" placeholder="الاسم" class="w-full p-4 rounded-xl mb-4 bg-black border border-gray-800 text-white outline-none">
             <input id="uPhone" type="tel" placeholder="رقم الهاتف" class="w-full p-4 rounded-xl mb-4 bg-black border border-gray-800 text-white outline-none text-center">
-            <input id="uLoc" type="text" placeholder="موقعك في الجزائر" class="w-full p-4 rounded-xl mb-6
+            <input id="uLoc" type="text" placeholder="موقعك في الجزائر" class="w-full p-4 rounded-xl mb-6 bg-black border border-gray-800 text-white outline-none">
+            <button onclick="submitOrder()" class="w-full bg-[#10b981] text-black py-4 rounded-xl font-black uppercase shadow-lg">تأكيد الطلب</button>
+        </div>
+    </div>
+
+    <script>
+        // إعدادات Firebase الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfVfaCVOoP_N_J1B6iSmDX4Vf7c3A", 
+            databaseURL: "https://legibier-fa574-default-rtdb.firebaseio.com/",
+            projectId: "legibier-fa574"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let selectedItem = "";
+        let selectedPrice = 0;
+
+        function openForm(n, p) {
+            selectedItem = n;
+            selectedPrice = p;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function submitOrder() {
+            const name = document.getElementById('uName').value;
+            const phone = document.getElementById('uPhone').value;
+            const loc = document.getElementById('uLoc').value;
+
+            if(!name || !phone) {
+                alert("يرجى ملء الاسم والهاتف!");
+                return;
+            }
+
+            // الإرسال مع تنبيه بالنجاح
+            db.ref('orders').push({
+                item: selectedItem,
+                price: selectedPrice,
+                customer: name,
+                phone: phone,
+                location: loc,
+                status: 'waiting'
+            }).then(() => {
+                alert("✅ مبروك! الطلب وصل للمطعم.");
+                location.reload();
+            }).catch((e) => {
+                alert("❌ خطأ في الإرسال: " + e.message);
+            });
+        }
+    </script>
+</body>
+</html>
