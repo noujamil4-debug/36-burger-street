@@ -3,49 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saladbox | لوحة العمال</title>
+    <title>إدارة Saladbox | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        :root { --green: #10b981; --black: #0a0a0a; --dark-gray: #151515; }
+        :root { --green: #10b981; --black: #0a0a0a; --l-black: #161616; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--black); color: white; padding: 20px; }
-        .stat-card { background: var(--dark-gray); border-radius: 25px; padding: 20px; border-left: 5px solid var(--green); text-align: center; }
-        .order-row { background: var(--dark-gray); border-radius: 25px; padding: 20px; border: 1px solid #333; margin-top: 20px; transition: 0.3s; }
-        .completed { border-right: 8px solid var(--green); opacity: 0.5; }
+        .stat-box { background: var(--l-black); border-radius: 25px; padding: 20px; border-left: 5px solid var(--green); text-align: center; }
+        .order-card { background: var(--l-black); border-radius: 30px; padding: 25px; border: 1px solid #333; margin-top: 20px; transition: 0.3s; }
+        .hidden-order { display: none; }
     </style>
 </head>
 <body>
 
-    <header class="flex justify-between items-center mb-8 border-b border-gray-900 pb-5">
-        <h1 class="text-xl font-black text-[#10b981] uppercase italic">Saladbox Admin</h1>
-        <div class="bg-green-500 w-3 h-3 rounded-full animate-ping"></div>
-    </header>
+    <header class="flex justify-between items-center mb-10"><h1 class="text-3xl font-black text-[#10b981]">إدارة SALADBOX</h1><div class="bg-green-500 w-3 h-3 rounded-full animate-ping"></div></header>
 
-    <!-- الإحصائيات (الربح والعدد) -->
     <div class="grid grid-cols-2 gap-4 mb-10">
-        <div class="stat-card">
+        <div class="stat-box">
             <p class="text-xs text-gray-500 uppercase font-bold mb-1">طلبات اليوم</p>
             <h2 id="totalOrders" class="text-4xl font-black">0</h2>
         </div>
-        <div class="stat-card">
+        <div class="stat-box">
             <p class="text-xs text-gray-400 uppercase font-bold mb-1">إجمالي الربح</p>
             <h2 id="totalProfit" class="text-2xl font-black text-[#10b981]">0</h2>
         </div>
     </div>
 
-    <h2 class="text-lg font-black text-gray-500 uppercase tracking-widest px-2">قائمة الطلبات</h2>
-    <div id="list" class="space-y-4 pb-20"></div>
+    <div id="list" class="space-y-4 pb-24"></div>
 
     <audio id="bell" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
     <script>
-        const config = {
-            apiKey: "AIzaSyDfVfaCVOoP_N_J1B6iSmDX4Vf7c3A", 
-            databaseURL: "https://legibier-fa574-default-rtdb.firebaseio.com/",
-            projectId: "legibier-fa574"
-        };
+        const config = { apiKey: "AIzaSyDfVfaCVOoP_N_J1B6iSmDX4Vf7c3A", databaseURL: "https://legibier-fa574-default-rtdb.firebaseio.com/", projectId: "legibier-fa574" };
         firebase.initializeApp(config);
         const db = firebase.database();
 
@@ -56,38 +47,33 @@
 
             snapshot.forEach((child) => {
                 const o = child.val(); const id = child.key;
-                
-                // حساب الربح الكلي
-                count++;
-                profit += parseInt(o.price);
+                count++; profit += parseInt(o.price);
 
-                const isDone = o.status === 'ready';
-                const html = `
-                    <div class="order-row ${isDone ? 'completed' : ''}">
-                        <div class="flex justify-between mb-4">
-                            <h3 class="text-lg font-black text-white italic underline decoration-green-500">${o.item}</h3>
-                            <span class="text-[10px] bg-white text-black px-3 py-1 rounded-full font-bold">${o.status}</span>
+                if (o.status !== 'archived') { // لا نظهر الطلبات المؤرشفة
+                    const html = `
+                    <div id="${id}" class="order-card shadow-xl">
+                        <div class="flex justify-between mb-2">
+                            <h3 class="text-xl font-black text-white italic underline decoration-green-500">${o.item}</h3>
+                            <span class="text-[10px] bg-white text-black px-3 py-1 rounded-full font-bold uppercase">${o.status}</span>
                         </div>
-                        <p class="text-gray-400 text-sm mb-6">الزبون: <span class="text-[#10b981]">${o.customer}</span> [ ${o.phone} ]</p>
+                        <p class="text-gray-400 text-sm mb-1 font-bold">📍 الموقع: ${o.location}</p>
+                        <p class="text-gray-400 text-sm mb-6">👤 الزبون: <span class="text-[#10b981] font-black">${o.customer}</span> [ ${o.phone} ]</p>
                         
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="update('${id}','accepted')" class="bg-gray-800 py-3 rounded-xl font-bold text-xs uppercase">تحضير 👨‍🍳</button>
-                            <button onclick="update('${id}','ready')" class="bg-[#10b981] text-black py-3 rounded-xl font-black text-xs uppercase">إكمال ✅</button>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="up('${id}','accepted')" class="bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase">تحضير</button>
+                            <button onclick="up('${id}','ready')" class="bg-[#10b981] text-black py-4 rounded-2xl font-black text-[10px] uppercase shadow-lg">إكمال ✅</button>
+                            <button onclick="up('${id}','archived')" class="bg-gray-800 text-gray-400 py-4 rounded-2xl font-black text-[10px] uppercase">إخفاء 👁️</button>
                         </div>
                     </div>`;
-                list.insertAdjacentHTML('afterbegin', html);
+                    list.insertAdjacentHTML('afterbegin', html);
+                }
             });
-
             document.getElementById('totalOrders').innerText = count;
             document.getElementById('totalProfit').innerText = profit.toLocaleString() + " DA";
         });
 
-        // تشغيل الجرس عند إضافة طلب جديد
-        db.ref('orders').on('child_added', () => {
-            document.getElementById('bell').play().catch(()=>{});
-        });
-
-        function update(id, s) { db.ref('orders/' + id).update({ status: s }); }
+        db.ref('orders').on('child_added', () => { document.getElementById('bell').play().catch(()=>{}); });
+        function up(id, s) { db.ref('orders/' + id).update({ status: s }); }
     </script>
 </body>
-</html>
+</html>                
