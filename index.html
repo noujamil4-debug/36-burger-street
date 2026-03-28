@@ -3,103 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saladbox | المنيو الرسمي</title>
-    <!-- مكتبات احترافية -->
+    <title>Saladbox Algeria | المنيو الكامل</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
     <style>
-        :root { --green: #10b981; --black: #0a0a0a; }
+        :root { --green: #10b981; --black: #0a0a0a; --l-black: #1a1a1a; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--black); color: white; margin: 0; }
-        .hero-title { color: var(--green); font-size: 3.5rem; font-weight: 900; font-style: italic; }
-        .nav-tabs { background: #1a1a1a; padding: 8px; border-radius: 50px; display: flex; gap: 10px; overflow-x: auto; width: 90%; margin: -25px auto 20px; border: 1px solid #333; position: relative; z-index: 10; }
-        .tab-btn { padding: 8px 20px; border-radius: 40px; font-size: 0.85rem; font-weight: 700; color: white; white-space: nowrap; transition: 0.3s; }
-        .tab-btn.active { background: var(--green); color: black; }
-        .food-card { background: #111; border-radius: 30px; overflow: hidden; border: 1px solid #222; margin-bottom: 20px; }
-        .order-btn { background: var(--green); color: black; font-weight: 900; width: 100%; padding: 15px; border-radius: 18px; transition: 0.3s; }
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .hero { height: 35vh; background: linear-gradient(rgba(0,0,0,0.7), var(--black)), url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000'); background-size: cover; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .nav-scroller { background: var(--l-black); padding: 10px; border-radius: 50px; display: flex; gap: 8px; overflow-x: auto; width: 92%; margin: -25px auto 20px; border: 1px solid #333; position: relative; z-index: 100; }
+        .nav-scroller::-webkit-scrollbar { display: none; }
+        .cat-btn { padding: 8px 20px; border-radius: 40px; font-size: 0.8rem; font-weight: 700; color: #888; white-space: nowrap; }
+        .cat-btn.active { background: var(--green); color: black; }
+        .food-card { background: var(--l-black); border-radius: 30px; overflow: hidden; border: 1px solid #222; margin-bottom: 20px; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر -->
-    <div class="h-[35vh] flex flex-col items-center justify-center text-center bg-[url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800')] bg-cover bg-center">
-        <div class="absolute inset-0 bg-black/60 h-[35vh]"></div>
-        <h1 class="hero-title relative z-10">Saladbox</h1>
-        <p class="relative z-10 text-[10px] tracking-[6px] text-gray-300 uppercase font-bold">Premium Healthy Food</p>
+    <div class="hero">
+        <h1 class="text-5xl font-black text-[#10b981] italic">Saladbox</h1>
+        <p class="text-[10px] tracking-[6px] text-gray-400 mt-2 uppercase font-bold text-center">Premium Healthy Food | Algiers</p>
     </div>
 
-    <!-- التبويبات (Switch) -->
-    <div class="nav-tabs shadow-2xl">
-        <button class="tab-btn active">الكل</button>
-        <button class="tab-btn">سلطات</button>
-        <button class="tab-btn">باستا</button>
-        <button class="tab-btn">بروتين</button>
+    <div class="nav-scroller shadow-2xl">
+        <button onclick="filter('all', this)" class="cat-btn active">الكل</button>
+        <button onclick="filter('salads', this)" class="cat-btn">🥗 سلطات</button>
+        <button onclick="filter('pasta', this)" class="cat-btn">🍝 باستا</button>
+        <button onclick="filter('protein', this)" class="cat-btn">🥩 بروتين</button>
+        <button onclick="filter('drinks', this)" class="cat-btn">🥤 مشروبات</button>
     </div>
 
-    <!-- عرض المنتجات -->
-    <main class="p-4 grid gap-6">
-        <div class="food-card">
-            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600" class="w-full h-52 object-cover opacity-80">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-black italic uppercase">Chicken Royal</h3>
-                    <span class="text-[#10b981] font-black text-lg">1250 DA</span>
-                </div>
-                <button onclick="openModal('Chicken Royal', 1250)" class="order-btn">طلب الطعام الآن 📥</button>
-            </div>
-        </div>
-    </main>
+    <main id="grid" class="p-4 grid gap-6 max-w-5xl mx-auto"></main>
 
-    <!-- استمارة الطلب -->
     <div id="orderModal" class="modal">
-        <div class="bg-[#1a1a1a] border-2 border-[#10b981] p-8 rounded-[40px] w-full max-w-sm">
-            <h2 class="text-xl font-black mb-6 text-center text-[#10b981]">أكمل بيانات طلبك 📝</h2>
-            <input id="uName" type="text" placeholder="الاسم الكامل" class="w-full p-4 rounded-xl mb-4 bg-black border border-gray-800 text-white outline-none focus:border-[#10b981]">
-            <input id="uPhone" type="tel" placeholder="رقم الهاتف" class="w-full p-4 rounded-xl mb-6 bg-black border border-gray-800 text-white outline-none focus:border-[#10b981]">
-            <button onclick="submitOrder()" class="w-full bg-[#10b981] text-black py-4 rounded-xl font-black text-lg shadow-lg">تأكيد الطلب</button>
-            <button onclick="document.getElementById('orderModal').style.display='none'" class="w-full text-gray-500 text-xs mt-4 underline">إلغاء</button>
+        <div class="bg-[#1a1a1a] border-2 border-[#10b981] p-8 rounded-[40px] w-full max-w-sm text-center">
+            <h2 class="text-2xl font-black mb-6 text-[#10b981]">بيانات التوصيل 📍</h2>
+            <input id="uName" type="text" placeholder="الاسم الكامل" class="w-full p-4 rounded-2xl mb-4 bg-black border border-gray-800 text-white outline-none">
+            <input id="uPhone" type="tel" placeholder="رقم الهاتف" class="w-full p-4 rounded-2xl mb-4 bg-black border border-gray-800 text-white outline-none">
+            <select id="uLoc" class="w-full p-4 rounded-2xl mb-6 bg-black border border-gray-800 text-white outline-none">
+                <option value="سيدي يحيى">سيدي يحيى</option>
+                <option value="فال ديدرا">فال ديدرا</option>
+                <option value="حيدرة">حيدرة</option>
+                <option value="دالي ابراهيم">دالي ابراهيم</option>
+            </select>
+            <button onclick="submitOrder()" class="w-full bg-[#10b981] text-black py-5 rounded-2xl font-black text-lg shadow-lg">تأكيد الطلب 📥</button>
         </div>
     </div>
 
     <script>
-        const config = {
-            apiKey: "AIzaSyDfVfaCVOoP_N_J1B6iSmDX4Vf7c3A",
-            databaseURL: "https://legibier-fa574-default-rtdb.firebaseio.com/",
-            projectId: "legibier-fa574"
-        };
+        const menu = [
+            { cat: 'salads', name: 'Chicken Royal', price: 1250, img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400' },
+            { cat: 'salads', name: 'Tuna Light', price: 1100, img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400' },
+            { cat: 'pasta', name: 'Pesto Pasta', price: 1450, img: 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=400' },
+            { cat: 'pasta', name: 'Veggie Pasta', price: 1300, img: 'https://images.unsplash.com/photo-1595131838595-3154b9f4450b?w=400' },
+            { cat: 'protein', name: 'Salmon Bowl', price: 1850, img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400' },
+            { cat: 'protein', name: 'Beef Teriyaki', price: 1650, img: 'https://images.unsplash.com/photo-1512058560366-9bb391f79f75?w=400' },
+            { cat: 'drinks', name: 'Detox Green', price: 750, img: 'https://images.unsplash.com/photo-1628515664169-7048331bb3af?w=400' },
+            { cat: 'drinks', name: 'Fresh Orange', price: 600, img: 'https://images.unsplash.com/photo-1613478223719-2ab80260f003?w=400' }
+        ];
+
+        const config = { apiKey: "AIzaSyDfVfaCVOoP_N_J1B6iSmDX4Vf7c3A", databaseURL: "https://legibier-fa574-default-rtdb.firebaseio.com/", projectId: "legibier-fa574" };
         firebase.initializeApp(config);
         const db = firebase.database();
+        let selected = null;
 
-        let currentItem = ""; let currentPrice = 0;
+        function render(cat) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = menu.filter(i => cat === 'all' || i.cat === cat).map(i => `
+                <div class="food-card">
+                    <img src="${i.img}" class="w-full h-52 object-cover opacity-80">
+                    <div class="p-6 flex justify-between items-center">
+                        <div><h3 class="text-xl font-black italic text-white">${i.name}</h3><span class="text-[#10b981] font-black">${i.price} DA</span></div>
+                        <button onclick="openModal('${i.name}', ${i.price})" class="bg-[#10b981] text-black px-6 py-3 rounded-2xl font-black">طلب</button>
+                    </div>
+                </div>`).join('');
+        }
 
-        function openModal(n, p) { currentItem = n; currentPrice = p; document.getElementById('orderModal').style.display='flex'; }
+        function filter(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render(cat);
+        }
+
+        function openModal(n, p) { selected = { n, p }; document.getElementById('orderModal').style.display = 'flex'; }
 
         function submitOrder() {
             const name = document.getElementById('uName').value;
             const phone = document.getElementById('uPhone').value;
-            
-            if(!name || !phone) {
-                return alert("يرجى إدخال اسمك ورقم هاتفك!");
-            }
+            const loc = document.getElementById('uLoc').value;
+            if(!name || !phone) return alert("املاً البيانات");
 
-            // إرسال البيانات إلى السحاب (Firebase)
-            const orderId = "SBX_" + Date.now();
-            db.ref('orders/' + orderId).set({
-                item: currentItem,
-                price: currentPrice,
-                customer: name,
-                phone: phone,
-                status: 'waiting',
-                time: new Date().toLocaleTimeString()
-            });
-
-            alert("✅ مبروك! طلبك وصل للمطعم.");
-            document.getElementById('orderModal').style.display = 'none';
-            location.reload(); // لإعادة تصفير الصفحة
+            db.ref('orders').push({ item: selected.n, price: selected.p, customer: name, phone: phone, location: loc, status: 'waiting' });
+            alert("✅ وصل طلبك للمطعم!");
+            location.reload();
         }
+        render('all');
     </script>
 </body>
 </html>
