@@ -1,149 +1,54 @@
-<!-- أضف هذا القسم في نهاية ملف Staff.html قبل وسم الـ <footer> مباشرة -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة الطلبات | 36 Burger Street</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo'; background: #0a0a0a; color: white; padding: 20px; }
+        .order-card { background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-right: 5px solid #ff9f1c; display: flex; justify-content: space-between; }
+        .badge { background: #ff9f1c; color: black; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
+        h1 { color: #ff9f1c; text-align: center; }
+    </style>
+</head>
+<body>
 
-<section class="admin-orders-section" id="orders-panel">
-    <div class="admin-header">
-        <h2><i class="fas fa-clipboard-list"></i> لوحة إدارة الطلبات</h2>
-        <span class="status-badge">قيد الإنجاز (Under Construction)</span>
-    </div>
+    <h1>🍔 لوحة تحكم الموظفين (الطلبات الحية)</h1>
+    <div id="liveOrders">جاري جلب الطلبات...</div>
 
-    <!-- حاوية الطلبات -->
-    <div class="orders-container">
-        <!-- طلب تجريبي 1 -->
-        <div class="order-item-card pending">
-            <div class="order-main-info">
-                <h3>زبون: محمد الأمين</h3>
-                <p><strong>الطلب:</strong> 2 تاكوس دجاج + 1 برجر كريسبي</p>
-                <p><strong>العنوان:</strong> سيدي امحمد، الجزائر</p>
-            </div>
-            <div class="order-actions">
-                <span class="order-status">جاري التحضير...</span>
-                <button class="btn-done">تم التوصيل <i class="fas fa-check"></i></button>
-            </div>
-        </div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-        <!-- طلب تجريبي 2 -->
-        <div class="order-item-card new">
-            <div class="order-main-info">
-                <h3>زبونة: مريم. ب</h3>
-                <p><strong>الطلب:</strong> فاجيتا دجاج (عرض خاص)</p>
-                <p><strong>العنوان:</strong> بوزريعة</p>
-            </div>
-            <div class="order-actions">
-                <span class="order-status">طلب جديد!</span>
-                <button class="btn-prepare">بدء التحضير</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5h3Luj1fmPBkZHJ9VukwA",
+            projectId: "saladbox-f541b",
+            appId: "1:326812021021:web:2253e938ca1794776106e2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-    <!-- رسالة توضيحية للموظفين -->
-    <div class="construction-notice">
-        <i class="fas fa-tools"></i>
-        <p>هذا القسم مخصص للإدارة فقط. سيتم ربطه بقاعدة بيانات Firebase قريباً لعرض الطلبات الحية.</p>
-    </div>
-</section>
-
-<style>
-    /* تنسيقات قسم إدارة الطلبات */
-    .admin-orders-section {
-        background: #111;
-        margin: 50px 8%;
-        padding: 30px;
-        border-radius: 20px;
-        border: 2px dashed var(--primary); /* حدود مقطعة لبيان أنه تحت الإنجاز */
-    }
-
-    .admin-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .admin-header h2 { color: var(--primary); font-size: 2rem; }
-
-    .status-badge {
-        background: #ffc107;
-        color: black;
-        padding: 5px 15px;
-        border-radius: 50px;
-        font-weight: bold;
-        font-size: 0.9rem;
-        animation: blink 1.5s infinite;
-    }
-
-    @keyframes blink {
-        0% { opacity: 1; }
-        50% { opacity: 0.5; }
-        100% { opacity: 1; }
-    }
-
-    .orders-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .order-item-card {
-        background: #1e1e1e;
-        padding: 20px;
-        border-radius: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-right: 8px solid #444;
-        transition: 0.3s;
-    }
-
-    /* ألوان حسب حالة الطلب */
-    .order-item-card.pending { border-right-color: #ff9f1c; }
-    .order-item-card.new { border-right-color: #e63946; }
-
-    .order-main-info h3 { color: white; margin-bottom: 10px; }
-    .order-main-info p { color: #aaa; font-size: 0.95rem; margin-bottom: 5px; }
-
-    .order-actions {
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .order-status {
-        color: var(--primary);
-        font-weight: bold;
-        font-size: 0.9rem;
-    }
-
-    .btn-done, .btn-prepare {
-        padding: 8px 20px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-
-    .btn-done { background: #2ecc71; color: white; }
-    .btn-prepare { background: var(--primary); color: black; }
-
-    .construction-notice {
-        margin-top: 30px;
-        text-align: center;
-        color: #666;
-        font-style: italic;
-    }
-
-    .construction-notice i { font-size: 2rem; margin-bottom: 10px; display: block; }
-
-    /* التجاوب مع الهاتف */
-    @media (max-width: 768px) {
-        .order-item-card {
-            flex-direction: column;
-            text-align: center;
-            gap: 20px;
-        }
-        .order-actions { align-items: center; }
-    }
-        </style>
+        // جلب الطلبات فور حدوثها
+        db.collection("orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+            const container = document.getElementById('liveOrders');
+            container.innerHTML = "";
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                container.innerHTML += `
+                    <div class="order-card">
+                        <div>
+                            <strong>الزبون:</strong> ${data.customer} <br>
+                            <strong>الهاتف:</strong> ${data.phone} <br>
+                            <strong>البلدية:</strong> ${data.commune} <br>
+                            <strong>الطلب:</strong> <span style="color:#ff9f1c">${data.item}</span>
+                        </div>
+                        <div>
+                            <span class="badge">${data.status}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
