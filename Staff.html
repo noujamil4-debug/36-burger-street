@@ -1,121 +1,149 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة إدارة الطلبات | Saladbox Staff</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Cairo', sans-serif; background: #000; color: white; margin: 0; }
-        .order-card { background: #0a0a0a; border-right: 8px solid #10b981; border-radius: 25px; transition: 0.3s; }
-        .is-ready { opacity: 0.4; filter: grayscale(1); border-right-color: #444; }
-        /* أنيميشن بسيط عند ظهور طلب جديد */
-        .new-entry { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body class="p-4 md:p-8">
+<!-- أضف هذا القسم في نهاية ملف Staff.html قبل وسم الـ <footer> مباشرة -->
 
-    <div class="flex justify-between items-center mb-8 bg-zinc-900/50 p-6 rounded-[30px] border border-zinc-800">
-        <div>
-            <h1 class="text-2xl font-black text-green-500 italic uppercase">Saladbox Staff</h1>
-            <p id="counter" class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">جاري التحميل...</p>
-        </div>
-        <button onclick="clearAll()" class="bg-red-600/20 text-red-500 border border-red-600/30 px-4 py-2 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition">🗑️ مسح القائمة</button>
+<section class="admin-orders-section" id="orders-panel">
+    <div class="admin-header">
+        <h2><i class="fas fa-clipboard-list"></i> لوحة إدارة الطلبات</h2>
+        <span class="status-badge">قيد الإنجاز (Under Construction)</span>
     </div>
 
-    <!-- هذا هو الوعاء الذي ستظهر فيه الطلبات -->
-    <div id="orders-list" class="grid gap-4"></div>
+    <!-- حاوية الطلبات -->
+    <div class="orders-container">
+        <!-- طلب تجريبي 1 -->
+        <div class="order-item-card pending">
+            <div class="order-main-info">
+                <h3>زبون: محمد الأمين</h3>
+                <p><strong>الطلب:</strong> 2 تاكوس دجاج + 1 برجر كريسبي</p>
+                <p><strong>العنوان:</strong> سيدي امحمد، الجزائر</p>
+            </div>
+            <div class="order-actions">
+                <span class="order-status">جاري التحضير...</span>
+                <button class="btn-done">تم التوصيل <i class="fas fa-check"></i></button>
+            </div>
+        </div>
 
-    <audio id="bell" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+        <!-- طلب تجريبي 2 -->
+        <div class="order-item-card new">
+            <div class="order-main-info">
+                <h3>زبونة: مريم. ب</h3>
+                <p><strong>الطلب:</strong> فاجيتا دجاج (عرض خاص)</p>
+                <p><strong>العنوان:</strong> بوزريعة</p>
+            </div>
+            <div class="order-actions">
+                <span class="order-status">طلب جديد!</span>
+                <button class="btn-prepare">بدء التحضير</button>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        const firebaseConfig = {
-            databaseURL: "https://saladbox-f541b-default-rtdb.europe-west1.firebasedatabase.app/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+    <!-- رسالة توضيحية للموظفين -->
+    <div class="construction-notice">
+        <i class="fas fa-tools"></i>
+        <p>هذا القسم مخصص للإدارة فقط. سيتم ربطه بقاعدة بيانات Firebase قريباً لعرض الطلبات الحية.</p>
+    </div>
+</section>
 
-        // المتغيرات الأساسية
-        const listDiv = document.getElementById('orders-list');
-        const counterText = document.getElementById('counter');
-        const bell = document.getElementById('bell');
-        let lastCount = 0;
+<style>
+    /* تنسيقات قسم إدارة الطلبات */
+    .admin-orders-section {
+        background: #111;
+        margin: 50px 8%;
+        padding: 30px;
+        border-radius: 20px;
+        border: 2px dashed var(--primary); /* حدود مقطعة لبيان أنه تحت الإنجاز */
+    }
 
-        // دالة عرض الطلبات بطريقة مستقرة
-        db.ref('orders').on('value', (snapshot) => {
-            let allHTML = "";
-            let count = 0;
-            let hasNewItem = false;
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
 
-            if (snapshot.exists()) {
-                // تحويل البيانات لمصفوفة لعرض الأحدث في الأعلى
-                const orders = [];
-                snapshot.forEach((child) => {
-                    orders.push({ id: child.key, ...child.val() });
-                });
-                
-                // ترتيب الطلبات (الأحدث أولاً)
-                orders.reverse();
-                count = orders.length;
+    .admin-header h2 { color: var(--primary); font-size: 2rem; }
 
-                orders.forEach((o) => {
-                    if (o.status === 'new') hasNewItem = true;
+    .status-badge {
+        background: #ffc107;
+        color: black;
+        padding: 5px 15px;
+        border-radius: 50px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        animation: blink 1.5s infinite;
+    }
 
-                    allHTML += `
-                        <div class="order-card ${o.status === 'ready' ? 'is-ready' : 'new-entry'} p-6 border border-zinc-900 shadow-2xl">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="text-zinc-500 text-[10px] font-bold">${o.time || ''}</span>
-                                        ${o.status === 'new' ? '<span class="bg-green-500 text-black text-[8px] px-2 rounded-full font-black uppercase">New</span>' : ''}
-                                    </div>
-                                    <h2 class="text-2xl font-black text-white">${o.item}</h2>
-                                    <p class="text-green-500 font-bold text-lg">${o.customer} <span class="text-zinc-600 text-sm">| ${o.phone}</span></p>
-                                    <p class="text-zinc-400 text-sm italic">📍 ${o.address}</p>
-                                </div>
-                                <div class="text-left">
-                                    <p class="text-xl font-black text-white mb-3">${o.price} DA</p>
-                                    <button onclick="markReady('${o.id}')" class="bg-white text-black px-6 py-2 rounded-xl font-black hover:bg-green-500 transition shadow-lg">
-                                        ${o.status === 'ready' ? 'تم ✅' : 'تحضير'}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
 
-                // تحديث القائمة مرة واحدة فقط (لزيادة الاستقرار)
-                listDiv.innerHTML = allHTML;
-                counterText.innerText = "عدد الطلبات الحالي: " + count;
+    .orders-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
 
-                // تشغيل الجرس إذا زاد عدد الطلبات (يعني وصول طلب جديد حقيقي)
-                if (count > lastCount) {
-                    bell.play().catch(e => console.log("تفاعل مع الصفحة لتفعيل الصوت"));
-                }
-                lastCount = count;
+    .order-item-card {
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-right: 8px solid #444;
+        transition: 0.3s;
+    }
 
-            } else {
-                listDiv.innerHTML = '<div class="text-center py-20 text-zinc-800 font-black italic text-xl uppercase tracking-widest">No Orders Yet</div>';
-                counterText.innerText = "لا توجد طلبات";
-                lastCount = 0;
-            }
-        });
+    /* ألوان حسب حالة الطلب */
+    .order-item-card.pending { border-right-color: #ff9f1c; }
+    .order-item-card.new { border-right-color: #e63946; }
 
-        // تغيير حالة الطلب لـ "جاهز"
-        function markReady(id) {
-            db.ref('orders/' + id).update({ status: 'ready' });
+    .order-main-info h3 { color: white; margin-bottom: 10px; }
+    .order-main-info p { color: #aaa; font-size: 0.95rem; margin-bottom: 5px; }
+
+    .order-actions {
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .order-status {
+        color: var(--primary);
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .btn-done, .btn-prepare {
+        padding: 8px 20px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn-done { background: #2ecc71; color: white; }
+    .btn-prepare { background: var(--primary); color: black; }
+
+    .construction-notice {
+        margin-top: 30px;
+        text-align: center;
+        color: #666;
+        font-style: italic;
+    }
+
+    .construction-notice i { font-size: 2rem; margin-bottom: 10px; display: block; }
+
+    /* التجاوب مع الهاتف */
+    @media (max-width: 768px) {
+        .order-item-card {
+            flex-direction: column;
+            text-align: center;
+            gap: 20px;
         }
-
-        // مسح كل الطلبات
-        function clearAll() {
-            if (confirm("هل تريد مسح جميع الطلبات من الشاشة والقاعدة؟")) {
-                db.ref('orders').remove();
-            }
-        }
-    </script>
-</body>
-</html>
+        .order-actions { align-items: center; }
+    }
+        </style>
