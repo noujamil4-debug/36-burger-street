@@ -2,53 +2,117 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إدارة الطلبات | 36 Burger Street</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Cairo'; background: #0a0a0a; color: white; padding: 20px; }
-        .order-card { background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-right: 5px solid #ff9f1c; display: flex; justify-content: space-between; }
-        .badge { background: #ff9f1c; color: black; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
-        h1 { color: #ff9f1c; text-align: center; }
+        :root { --primary: #ff9f1c; --danger: #e63946; --dark: #0a0a0a; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        
+        body { background: var(--dark); color: white; padding: 20px; }
+
+        h1 { color: var(--primary); text-align: center; margin-bottom: 25px; font-size: 2rem; border-bottom: 2px solid #222; padding-bottom: 10px; }
+
+        /* زر مسح الكل */
+        .admin-tools { display: flex; justify-content: center; margin-bottom: 30px; }
+        .btn-delete-all { 
+            background: var(--danger); color: white; border: none; padding: 12px 25px; 
+            border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3); transition: 0.3s;
+        }
+        .btn-delete-all:hover { transform: scale(1.05); background: #ff4d5a; }
+
+        /* كارت الطلب - تكبير الخط */
+        .order-card { 
+            background: #1a1a1a; padding: 20px; margin-bottom: 20px; border-radius: 15px; 
+            border-right: 8px solid var(--primary); display: flex; flex-direction: column; gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .order-info p { font-size: 1.3rem; margin-bottom: 8px; line-height: 1.6; }
+        .order-info b { color: var(--primary); margin-left: 5px; }
+        
+        .item-name { background: #333; padding: 5px 15px; border-radius: 8px; color: #fff; font-weight: 900; font-size: 1.5rem; display: inline-block; margin-top: 5px; border: 1px solid var(--primary); }
+
+        .status-badge { align-self: flex-start; background: var(--primary); color: black; padding: 5px 15px; border-radius: 50px; font-weight: bold; font-size: 1rem; }
+
+        .no-orders { text-align: center; color: #666; font-size: 1.5rem; margin-top: 50px; }
     </style>
 </head>
 <body>
 
-    <h1>🍔 لوحة تحكم الموظفين (الطلبات الحية)</h1>
-    <div id="liveOrders">جاري جلب الطلبات...</div>
+    <h1>🍔 لوحة تحكم الطلبات الحية</h1>
 
+    <div class="admin-tools">
+        <button class="btn-delete-all" onclick="deleteAllOrders()">
+            <i class="fas fa-trash-alt"></i> مسح جميع الطلبيات
+        </button>
+    </div>
+
+    <div id="liveOrders">
+        <p class="no-orders">جاري جلب الطلبات...</p>
+    </div>
+
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
+        // مفاتيحك الخاصة
         const firebaseConfig = {
             apiKey: "AIzaSyD5h3Luj1fmPBkZHJ9VukwA",
+            authDomain: "saladbox-f541b.firebaseapp.com",
             projectId: "saladbox-f541b",
             appId: "1:326812021021:web:2253e938ca1794776106e2"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // جلب الطلبات فور حدوثها
+        // جلب الطلبات وعرضها
         db.collection("orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
             const container = document.getElementById('liveOrders');
+            if (snapshot.empty) {
+                container.innerHTML = '<p class="no-orders">لا توجد طلبيات حالياً</p>';
+                return;
+            }
             container.innerHTML = "";
             snapshot.forEach(doc => {
                 const data = doc.data();
                 container.innerHTML += `
                     <div class="order-card">
-                        <div>
-                            <strong>الزبون:</strong> ${data.customer} <br>
-                            <strong>الهاتف:</strong> ${data.phone} <br>
-                            <strong>البلدية:</strong> ${data.commune} <br>
-                            <strong>الطلب:</strong> <span style="color:#ff9f1c">${data.item}</span>
+                        <div class="order-info">
+                            <p><b>👤 الزبون:</b> ${data.customer}</p>
+                            <p><b>📞 الهاتف:</b> ${data.phone}</p>
+                            <p><b>📍 البلدية:</b> ${data.commune}</p>
+                            <p><b>🍔 الطلب:</b> <span class="item-name">${data.item}</span></p>
                         </div>
-                        <div>
-                            <span class="badge">${data.status}</span>
-                        </div>
+                        <span class="status-badge">${data.status || 'جديد'}</span>
                     </div>
                 `;
             });
         });
+
+        // وظيفة مسح جميع الطلبات
+        async function deleteAllOrders() {
+            const confirmAction = confirm("⚠️ هل أنت متأكد من مسح جميع الطلبات نهائياً؟ لا يمكن التراجع عن هذا الفعل.");
+            
+            if (confirmAction) {
+                try {
+                    const snapshot = await db.collection("orders").get();
+                    const batch = db.batch();
+                    
+                    snapshot.docs.forEach((doc) => {
+                        batch.delete(doc.ref);
+                    });
+
+                    await batch.commit();
+                    alert("✅ تم مسح جميع الطلبيات بنجاح!");
+                } catch (error) {
+                    alert("❌ حدث خطأ أثناء الحذف: " + error.message);
+                }
+            }
+        }
     </script>
 </body>
 </html>
