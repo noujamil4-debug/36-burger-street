@@ -3,93 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم | 36 Burger Street</title>
+    <title>لوحة إدارة الطلبات | 36 Burger Street</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff9f1c; --danger: #e63946; --dark: #0a0a0a; --gray: #1a1a1a; }
+        :root { --primary: #ff9f1c; --success: #2ecc71; --danger: #e63946; --dark: #0a0a0a; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        
         body { background: var(--dark); color: white; padding-bottom: 50px; }
 
-        /* الشريط العلوي الجديد */
         .admin-top-bar {
-            background: #111;
-            color: var(--primary);
-            padding: 20px;
-            text-align: center;
-            font-size: 1.8rem;
-            font-weight: 900;
-            border-bottom: 4px solid var(--primary);
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            background: #111; color: var(--primary); padding: 20px;
+            text-align: center; font-size: 1.8rem; font-weight: 900;
+            border-bottom: 4px solid var(--primary); margin-bottom: 20px;
         }
 
-        h1 { text-align: center; margin-bottom: 20px; font-size: 1.6rem; color: #fff; }
+        .admin-tools { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+        .btn-delete-all { background: var(--danger); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        /* زر مسح الكل */
-        .admin-tools { display: flex; justify-content: center; margin-bottom: 30px; }
-        .btn-delete-all { 
-            background: var(--danger); color: white; border: none; padding: 12px 25px; 
-            border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3); transition: 0.3s;
-        }
-        .btn-delete-all:hover { transform: scale(1.05); background: #ff4d5a; }
-
-        /* كارت الطلب - خط كبير وواضح */
         .orders-list { padding: 0 15px; max-width: 800px; margin: 0 auto; }
-        .order-card { 
-            background: var(--gray); padding: 25px; margin-bottom: 25px; border-radius: 20px; 
-            border-right: 10px solid var(--primary); display: flex; flex-direction: column; gap: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-        }
-
-        .order-info p { font-size: 1.4rem; margin-bottom: 10px; line-height: 1.6; }
-        .order-info b { color: var(--primary); margin-left: 8px; }
         
-        .item-name { 
-            background: #000; padding: 10px 20px; border-radius: 12px; color: #fff; 
-            font-weight: 900; font-size: 1.7rem; display: inline-block; 
-            margin-top: 10px; border: 2px solid var(--primary); text-align: center;
+        /* كارت الطلب */
+        .order-card { 
+            background: #1a1a1a; padding: 20px; margin-bottom: 20px; border-radius: 20px; 
+            border-right: 10px solid var(--primary); transition: 0.3s;
         }
 
-        .status-badge { align-self: flex-start; background: var(--primary); color: black; padding: 6px 20px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; }
+        /* ستايل الطلب المكتمل */
+        .order-card.completed { border-right-color: var(--success); opacity: 0.8; }
 
-        .no-orders { text-align: center; color: #666; font-size: 1.6rem; margin-top: 50px; }
+        .order-info p { font-size: 1.3rem; margin-bottom: 8px; }
+        .order-info b { color: var(--primary); }
+        .item-name { background: #000; padding: 8px; border-radius: 10px; color: #fff; font-weight: 900; font-size: 1.5rem; display: block; text-align: center; border: 1px solid var(--primary); margin: 10px 0; }
 
-        @media (max-width: 600px) {
-            .admin-top-bar { font-size: 1.4rem; padding: 15px; }
-            .order-info p { font-size: 1.2rem; }
-            .item-name { font-size: 1.5rem; }
+        /* أزرار الحالة */
+        .actions { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-status { 
+            flex: 1; padding: 12px; border: none; border-radius: 10px; 
+            font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.3s;
         }
+        .btn-ready { background: var(--success); color: white; }
+        .btn-ready:hover { background: #27ae60; }
+        
+        .status-text { font-weight: 900; color: var(--success); display: none; text-align: center; font-size: 1.2rem; }
+        .completed .status-text { display: block; }
+        .completed .btn-ready { display: none; }
+
+        .no-orders { text-align: center; color: #666; font-size: 1.5rem; margin-top: 50px; }
     </style>
 </head>
 <body>
 
-    <!-- الإضافة الجديدة: العنوان في الأعلى -->
-    <div class="admin-top-bar">
-        36-burger-street - لوحة تحكم
-    </div>
-
-    <h1>🍔 مراقبة الطلبات الحية</h1>
+    <div class="admin-top-bar">36-burger-street - لوحة التحكم</div>
 
     <div class="admin-tools">
-        <button class="btn-delete-all" onclick="deleteAllOrders()">
-            <i class="fas fa-trash-alt"></i> مسح جميع الطلبيات
-        </button>
+        <button class="btn-delete-all" onclick="deleteAllOrders()"><i class="fas fa-trash"></i> مسح الكل</button>
     </div>
 
     <div id="liveOrders" class="orders-list">
-        <p class="no-orders">جاري جلب الطلبات...</p>
+        <p class="no-orders">جاري تحميل الطلبات...</p>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-        // مفاتيح Firebase الخاصة بك
         const firebaseConfig = {
             apiKey: "AIzaSyD5h3Luj1fmPBkZHJ9VukwA",
             authDomain: "saladbox-f541b.firebaseapp.com",
@@ -99,45 +76,56 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // جلب الطلبات وعرضها
+        // جلب وعرض الطلبات
         db.collection("orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
             const container = document.getElementById('liveOrders');
             if (snapshot.empty) {
-                container.innerHTML = '<p class="no-orders">لا توجد طلبيات حالياً</p>';
+                container.innerHTML = '<p class="no-orders">لا توجد طلبات</p>';
                 return;
             }
             container.innerHTML = "";
             snapshot.forEach(doc => {
                 const data = doc.data();
+                const isCompleted = data.status === "تم التجهيز";
+                
                 container.innerHTML += `
-                    <div class="order-card">
+                    <div class="order-card ${isCompleted ? 'completed' : ''}">
                         <div class="order-info">
                             <p><b>👤 الزبون:</b> ${data.customer}</p>
                             <p><b>📞 الهاتف:</b> ${data.phone}</p>
                             <p><b>📍 البلدية:</b> ${data.commune}</p>
-                            <p style="text-align:center;"><b>🍔 الطلب:</b><br> <span class="item-name">${data.item}</span></p>
+                            <span class="item-name">${data.item}</span>
                         </div>
-                        <span class="status-badge">${data.status || 'جديد'}</span>
+                        <div class="actions">
+                            <button class="btn-status btn-ready" onclick="markAsReady('${doc.id}')">
+                                <i class="fas fa-check"></i> تم التجهيز
+                            </button>
+                            <p class="status-text"><i class="fas fa-check-circle"></i> الطلبية جاهزة</p>
+                        </div>
                     </div>
                 `;
             });
         });
 
-        // وظيفة مسح جميع الطلبات
+        // وظيفة تغيير حالة الطلب
+        function markAsReady(orderId) {
+            db.collection("orders").doc(orderId).update({
+                status: "تم التجهيز"
+            }).then(() => {
+                console.log("Order updated!");
+            }).catch(error => {
+                alert("خطأ في التحديث: " + error.message);
+            });
+        }
+
         async function deleteAllOrders() {
-            const confirmAction = confirm("⚠️ هل أنت متأكد من مسح جميع الطلبات نهائياً؟");
-            if (confirmAction) {
-                try {
-                    const snapshot = await db.collection("orders").get();
-                    const batch = db.batch();
-                    snapshot.docs.forEach((doc) => batch.delete(doc.ref));
-                    await batch.commit();
-                    alert("✅ تم تنظيف القائمة بنجاح!");
-                } catch (error) {
-                    alert("❌ خطأ: " + error.message);
-                }
+            if(confirm("هل تريد مسح جميع الطلبات؟")) {
+                const snapshot = await db.collection("orders").get();
+                const batch = db.batch();
+                snapshot.docs.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
             }
         }
     </script>
 </body>
-</html>           
+</html>
