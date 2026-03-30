@@ -3,227 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>36 Burger Street | الموقع الرسمي الفاخر</title>
-    
-    <!-- الخطوط العالمية للفخامة -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Playfair+Display:wght@700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <title>36 Burger Street | Official</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-
     <style>
-        :root {
-            --bg-charcoal: #1a1a1a; /* أسود فاتح فاخر */
-            --gold: #D4AF37;       /* ذهبي ملكي */
-            --accent: #ff9f1c;     /* برتقالي المطعم */
-            --card-bg: #222222;
-        }
-
+        :root { --bg: #1a1a1a; --gold: #D4AF37; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background-color: var(--bg-charcoal); color: white; overflow-x: hidden; }
-
-        /* --- الواجهة الترحيبية (Hero) --- */
-        #home-view {
-            height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: linear-gradient(rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.9)), 
-                        url('https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=1920') center/cover;
-        }
-
-        .logo-main {
-            width: 180px; height: 180px; border-radius: 50%;
-            border: 4px solid var(--gold);
-            background: url('https://i.postimg.cc/cLPjm2br/e62a4436040657-570d2baa45a2b.jpg') center/cover;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.4);
-            margin-bottom: 30px;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        h1 { font-family: 'Playfair Display', serif; font-size: 3.2rem; color: var(--gold); margin-bottom: 40px; }
-
-        .btn-open-cabinet {
-            background: var(--gold); color: #000; padding: 22px 60px;
-            font-size: 1.6rem; font-weight: 900; border-radius: 60px;
-            cursor: pointer; border: 3px solid white; transition: 0.4s;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-        .btn-open-cabinet:hover { background: white; transform: scale(1.1); }
-
-        /* --- المنيو (Menu View) --- */
-        #menu-view {
-            display: none;
-            min-height: 100vh;
-            padding: 40px 5%;
-            background: var(--bg-charcoal);
-        }
-
-        .menu-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding-bottom: 20px; border-bottom: 2px solid var(--gold); margin-bottom: 40px;
-        }
-
-        .btn-back { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 8px 20px; border-radius: 10px; cursor: pointer; }
-
-        .cat-title { font-size: 1.8rem; color: var(--gold); margin: 50px 0 25px; border-right: 6px solid var(--gold); padding-right: 15px; font-weight: 900; }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        
-        .card { background: var(--card-bg); border-radius: 30px; overflow: hidden; border: 1px solid #333; text-align: center; transition: 0.4s; }
-        .card:hover { transform: translateY(-10px); border-color: var(--gold); box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
-        .card img { width: 100%; height: 230px; object-fit: cover; }
-        .card-body { padding: 25px; }
-        .card-body h3 { font-size: 1.4rem; margin-bottom: 15px; color: #fff; }
-        .price { font-size: 1.8rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; display: block; }
-        .btn-order { background: var(--gold); color: #000; border: none; width: 100%; padding: 15px; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 1.1rem; }
-
-        /* --- نافذة الطلب (Modal) --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
-        .modal-content { background: #1a1a1a; padding: 35px; border-radius: 35px; width: 90%; max-width: 450px; border: 1px solid var(--gold); }
-        input, select { width: 100%; padding: 15px; margin-bottom: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 12px; }
-        .btn-gps { background: #4285F4; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 20px; cursor: pointer; font-weight: bold; }
-
-        @media (max-width: 600px) { h1 { font-size: 2.5rem; } .logo-main { width: 140px; height: 140px; } }
+        body { background-color: var(--bg); color: white; overflow-x: hidden; }
+        #home-view { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(rgba(26,26,26,0.9), rgba(26,26,26,0.9)), url('https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=1920') center/cover; }
+        .logo-box { width: 150px; height: 150px; border-radius: 50%; border: 3px solid var(--gold); background: url('https://i.postimg.cc/cLPjm2br/e62a4436040657-570d2baa45a2b.jpg') center/cover; box-shadow: 0 0 30px var(--gold); margin-bottom: 20px; }
+        h1 { font-family: 'Playfair Display'; font-size: 2.5rem; color: var(--gold); margin-bottom: 30px; }
+        .btn-main { background: var(--gold); color: #000; padding: 15px 40px; border-radius: 50px; font-weight: 900; cursor: pointer; border: 2px solid white; }
+        #menu-view { display: none; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: #222; border-radius: 20px; overflow: hidden; border: 1px solid #333; text-align: center; padding-bottom: 15px; }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: #111; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; border: 1px solid var(--gold); }
+        input, select { width: 100%; padding: 12px; margin-bottom: 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; }
     </style>
 </head>
 <body>
 
-    <!-- الجزء الأول: الواجهة -->
     <div id="home-view">
-        <div class="logo-main" data-aos="zoom-in"></div>
+        <div class="logo-box"></div>
         <h1>36 BURGER STREET</h1>
-        <div class="btn-open-cabinet" onclick="openCabinet()">فتح الخزانة 🍔</div>
+        <div class="btn-main" onclick="showMenu()">فتح المنيو 🍔</div>
     </div>
 
-    <!-- الجزء الثاني: المنيو -->
     <div id="menu-view">
-        <div class="menu-header">
-            <button class="btn-back" onclick="closeCabinet()">← رجوع</button>
-            <h2 style="color: var(--gold); font-weight: 900;">قائمة الطعام الفاخرة</h2>
-        </div>
-
-        <div class="container">
-            <!-- TACOS -->
-            <div class="cat-title">TACOS SERIES</div>
-            <div class="grid">
-                <div class="card" data-aos="fade-up">
-                    <img src="https://i.postimg.cc/6Qvdr1k3/french-tacos-with-grilled-chicken-cut-french-tacos-close-up-on-black-background-delicious-french-tac.jpg">
-                    <div class="card-body"><h3>TACOS CHIKEN</h3><span class="price">350 DA</span><button class="btn-order" onclick="openOrder('تاكوس دجاج (350DA)')">أضف للطلب</button></div>
-                </div>
-                <div class="card" data-aos="fade-up" data-aos-delay="100">
-                    <img src="https://i.postimg.cc/fLgDMBbf/french-tacos-with-chicken-popcorn-cut-french-tacos-close-up-on-black-background-delicious-french-tac.jpg">
-                    <div class="card-body"><h3>TACOS CRISPY</h3><span class="price">470 DA</span><button class="btn-order" onclick="openOrder('تاكوس كريسبي (470DA)')">أضف للطلب</button></div>
-                </div>
-                <div class="card" data-aos="fade-up" data-aos-delay="200">
-                    <img src="https://i.postimg.cc/HsNc699G/authentic-french-tacos.jpg">
-                    <div class="card-body"><h3>TACOS BEEF</h3><span class="price">390 DA</span><button class="btn-order" onclick="openOrder('تاكوس لحم (390DA)')">أضف للطلب</button></div>
-                </div>
+        <button onclick="hideMenu()" style="background:none; color:var(--gold); border:1px solid var(--gold); padding:5px 10px; border-radius:5px;">← رجوع</button>
+        <div class="grid">
+            <div class="card">
+                <img src="https://i.postimg.cc/8zK2JwWL/Crispy-Strips-Western-San638669275205899268.jpg">
+                <h3>SANDWICH POULET</h3><p style="color:var(--gold)">370 DA</p>
+                <button class="btn-main" onclick="openModal('ساندوتش دجاج')">اطلب الآن</button>
             </div>
-
-            <!-- FAJITAS -->
-            <div class="cat-title">FAJITAS</div>
-            <div class="grid" style="justify-content: center;">
-                <div class="card" style="max-width: 450px; border: 2px solid var(--gold);" data-aos="zoom-in">
-                    <img src="https://i.postimg.cc/hvSy3Bnr/3569.jpg">
-                    <div class="card-body">
-                        <h3>FAJITAS POULET</h3>
-                        <span class="price">250 DA</span>
-                        <button class="btn-order" style="background: var(--accent);" onclick="openOrder('فاجيتا دجاج (250DA)')">اطلب العرض الملكي</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SANDWICHES -->
-            <div class="cat-title">LUXURY SANDWICHES</div>
-            <div class="grid">
-                <!-- تم تحديث صورة Poulet هنا -->
-                <div class="card" data-aos="fade-up">
-                    <img src="https://i.postimg.cc/8zK2JwWL/Crispy-Strips-Western-San638669275205899268.jpg">
-                    <div class="card-body"><h3>SANDWICH POULET</h3><span class="price">370 DA</span><button class="btn-order" onclick="openOrder('ساندوتش دجاج (370DA)')">أضف للطلب</button></div>
-                </div>
-                <!-- تم تحديث صورة Crispy هنا -->
-                <div class="card" data-aos="fade-up" data-aos-delay="100">
-                    <img src="https://i.postimg.cc/TwF2VfDq/plat-traditionnel-nouvelle-orleans-isole-fond-transparent-893571-44245.jpg">
-                    <div class="card-body"><h3>SANDWICH CRISPY</h3><span class="price">490 DA</span><button class="btn-order" onclick="openOrder('ساندوتش كريسبي (490DA)')">أضف للطلب</button></div>
-                </div>
-                <div class="card" data-aos="fade-up" data-aos-delay="200">
-                    <img src="https://i.postimg.cc/05ML6p2J/delicious-grilled-sandwich-with-fresh-vegetables-and-meat-in-transparent-background-free-png.png">
-                    <div class="card-body"><h3>SANDWICH BEEF</h3><span class="price">450 DA</span><button class="btn-order" onclick="openOrder('ساندوتش لحم (450DA)')">أضف للطلب</button></div>
-                </div>
+            <div class="card">
+                <img src="https://i.postimg.cc/TwF2VfDq/plat-traditionnel-nouvelle-orleans-isole-fond-transparent-893571-44245.jpg">
+                <h3>SANDWICH CRISPY</h3><p style="color:var(--gold)">490 DA</p>
+                <button class="btn-main" onclick="openModal('ساندوتش كريسبي')">اطلب الآن</button>
             </div>
         </div>
     </div>
 
-    <!-- نافذة الطلب -->
     <div class="modal" id="orderModal">
         <div class="modal-content">
-            <h2 id="orderTitle" style="text-align: center; color: var(--gold); margin-bottom: 25px;">تأكيد الطلبية</h2>
-            <input type="text" id="custName" placeholder="الاسم الكامل">
-            <input type="tel" id="custPhone" placeholder="رقم الهاتف">
-            <select id="custArea">
-                <option value="">بلدية التوصيل</option>
-                <option value="Sidi Yahia">سيدي يحيا (Sidi Yahia)</option>
-                <option value="Val d'Hydra">فال ديدرا (Val d'Hydra)</option>
-                <option value="Dely Ibrahim">ديلي براهيم (Dely Ibrahim)</option>
+            <h2 id="orderTitle" style="color:var(--gold); text-align:center;">تأكيد الطلب</h2>
+            <input type="text" id="name" placeholder="الاسم الكامل">
+            <input type="tel" id="phone" placeholder="رقم الهاتف">
+            <select id="area">
+                <option value="">منطقة التوصيل</option>
+                <option value="Sidi Yahia">سيدي يحيا</option>
+                <option value="Val d'Hydra">فال ديدرا</option>
+                <option value="Dely Ibrahim">ديلي براهيم</option>
             </select>
-            <button class="btn-gps" onclick="getLocation()"><i class="fas fa-location-arrow"></i> تحديد موقعي (GPS)</button>
-            <input type="hidden" id="gpsLink">
-            <button class="btn-order" style="padding: 18px; font-size: 1.2rem;" onclick="submitOrder()">إرسال الطلب الآن 🍔</button>
-            <button onclick="closeOrder()" style="background:none; color:#666; border:none; margin-top:15px; width:100%; cursor:pointer; font-weight: bold;">إلغاء</button>
+            <button id="sendBtn" class="btn-main" style="width:100%" onclick="sendOrder()">إرسال الطلب 🍔</button>
+            <button onclick="closeModal()" style="background:none; color:gray; border:none; margin-top:10px;">إلغاء</button>
         </div>
     </div>
 
-    <!-- Firebase & Scripts -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
-        AOS.init();
         const firebaseConfig = {
             apiKey: "AIzaSyD5h3Luj1fmPBkZHJ9VukwA",
+            authDomain: "saladbox-f541b.firebaseapp.com",
             projectId: "saladbox-f541b",
-            appId: "1:326812021021:web:2253e938ca1794776106e2"
+            storageBucket: "saladbox-f541b.appspot.com",
+            messagingSenderId: "326812021021",
+            // الرقم المحدث من صورتك الأخيرة:
+            appId: "1:326812021021:web:2253e938ca143537fcf1f4" 
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        function openCabinet() {
-            document.getElementById('home-view').style.display = 'none';
-            document.getElementById('menu-view').style.display = 'block';
-            window.scrollTo(0,0);
-        }
-        function closeCabinet() {
-            document.getElementById('menu-view').style.display = 'none';
-            document.getElementById('home-view').style.display = 'flex';
-        }
-
+        function showMenu() { document.getElementById('home-view').style.display='none'; document.getElementById('menu-view').style.display='block'; }
+        function hideMenu() { document.getElementById('home-view').style.display='flex'; document.getElementById('menu-view').style.display='none'; }
+        
         let selectedItem = "";
-        function openOrder(item) { selectedItem = item; document.getElementById('orderTitle').innerText = item; document.getElementById('orderModal').style.display = 'flex'; }
-        function closeOrder() { document.getElementById('orderModal').style.display = 'none'; }
+        function openModal(n) { selectedItem = n; document.getElementById('orderTitle').innerText = n; document.getElementById('orderModal').style.display='flex'; }
+        function closeModal() { document.getElementById('orderModal').style.display='none'; }
 
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    document.getElementById('gpsLink').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                    alert("📍 تم تحديد موقعك الجغرافي بنجاح!");
-                });
-            }
-        }
-
-        function submitOrder() {
-            const n = document.getElementById('custName').value;
+        function sendOrder() {
+            const n = document.getElementById('name').value;
             const p = document.getElementById('phone').value;
-            const a = document.getElementById('custArea').value;
-            if(!n || !p || !a) { alert("يرجى ملء البيانات"); return; }
+            const a = document.getElementById('area').value;
+            const btn = document.getElementById('sendBtn');
+
+            if(!n || !p || !a) return alert("أكمل البيانات");
+            
+            btn.innerText = "جاري الإرسال...";
+            btn.disabled = true;
+
             db.collection("orders").add({
-                customer: n, phone: p, commune: a, googleMaps: document.getElementById('gpsLink').value || "غير محدد",
-                item: selectedItem, status: "جديد", timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => { alert("تم استلام طلبك بنجاح! 🍔🔥"); closeOrder(); });
+                customer: n, phone: p, commune: a, item: selectedItem,
+                status: "جديد", timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                alert("تم إرسال طلبك بنجاح! 🍔");
+                closeModal();
+                btn.innerText = "إرسال الطلب 🍔";
+                btn.disabled = false;
+            })
+            .catch((error) => {
+                alert("خطأ: لم يتم فتح القفل في Firebase (Rules). تأكد من تغييرها لـ true واضغط Publish.");
+                console.error(error);
+                btn.innerText = "إعادة المحاولة";
+                btn.disabled = false;
+            });
         }
     </script>
 </body>
